@@ -20,16 +20,35 @@ SENTENCE = (
 )
 
 
+def check_not_blank(sentence: str) -> None:
+    """Fail if the sentence is empty or only whitespace."""
+    assert sentence.strip(), "sentence must not be empty or only whitespace"
+
+
+def check_single_line(sentence: str) -> None:
+    """Fail if the sentence spans more than one line."""
+    assert "\n" not in sentence.strip(), "sentence must be a single line"
+
+
+def check_length(sentence: str) -> None:
+    """Fail if the sentence is outside the 1-200 character range."""
+    assert 1 <= len(sentence) <= 200, (
+        f"sentence must be 1-200 characters, got {len(sentence)}"
+    )
+
+
+def validate(sentence: str) -> None:
+    """Run every gate check: not blank, one line, 1-200 characters."""
+    check_not_blank(sentence)
+    check_single_line(sentence)
+    check_length(sentence)
+
+
 def main() -> None:
     output_path = os.environ.get("ENTRY_OUTPUT", "/output/entry.txt")
 
     # Gate first: one sentence, 1-200 characters, not only whitespace.
-    stripped = SENTENCE.strip()
-    assert stripped, "sentence must not be empty or only whitespace"
-    assert "\n" not in stripped, "sentence must be a single line"
-    assert 1 <= len(SENTENCE) <= 200, (
-        f"sentence must be 1-200 characters, got {len(SENTENCE)}"
-    )
+    validate(SENTENCE)
 
     os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
